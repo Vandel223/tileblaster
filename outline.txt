@@ -1,0 +1,26 @@
+Algoritmos principais:
+
+	- analisar parede para descobrir manchas (lista de adjacencia, ou seja, possiveis lances legais). possivelmente dá para analisar parede inicial apenas
+	- procura generalizada com dfs:
+		- dfs
+		- unbound
+
+Estruturas:
+
+	- estrutura do estado:
+		- parede
+		- lista de adjacencia (acervo - implementação como arvore binaria):
+			- valor da mancha
+			- posição (apenas 1 coordenada)
+			- 
+
+	- stack de estados (tamanho é ):
+		- 
+
+	- array de conectividade - tamanho é (L * C)/2 - Pos {int x; int y}
+
+
+TODO:
+	dfs.c e dfs.h
+	output.c e output.h
+	tileblaster.c e tileblaster.h
