@@ -6,6 +6,7 @@
 typedef struct _prioQueue PrioQueue;
 
 PrioQueue *pqInit(int, int (*less)(Item, Item));
+PrioQueue *pqCopy(PrioQueue *);
 int pqEnqueue(Item, PrioQueue *);
 Item pqDequeue(PrioQueue *);
 int pqIsEmpty(PrioQueue *);

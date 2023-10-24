@@ -59,13 +59,14 @@ void grBlocks(Grid *gr, PrioQueue *pq) {
 Block *grBlock(Grid *gr, int x, int y, int rm) {
 
 	int cnt = 0, color = gr->Gr[x - 1][gr->row_num - y];
-	Block *blk = blkInit(x, y, 0);
 
-	if (color == -1) return blk;
+	if (color == -1) return blkInit(x, y, 0);
 
 	grBlock_rec(gr, x, y, color, &cnt, rm);
 
-	blkChNum(blk, cnt);
+	if (rm == 1) return NULL;
+
+	Block *blk = blkInit(x, y, cnt);
 
 	return blk;
 
@@ -166,6 +167,62 @@ Grid *grCopy(Grid *gr) {
 			cpy->Gr[i][j] = gr->Gr[i][j];
 
 	return cpy;
+
+}
+
+void grGravity(Grid *gr) {
+
+    int fallHeight = 0;
+    int aux;
+	int row_num = gr->row_num, col_num = gr->col_num;
+
+    for (int i = 0; i < col_num; i++, fallHeight = 0) {
+        for (int j = 0; j < row_num; j++) {
+            if (gr->Gr[i][row_num - j - 1] == -1) {
+                fallHeight++;
+                continue;
+            }   
+            if (fallHeight > 0) {
+                aux = gr->Gr[i][row_num - j - 1 + fallHeight];
+                gr->Gr[i][row_num - j - 1 + fallHeight] = gr->Gr[i][row_num - j - 1]; 
+                gr->Gr[i][row_num - j - 1] = aux;
+            }   
+        }   
+    }   
+}
+
+void grSlide(Grid *gr) {
+
+    int slideLen = 0;
+    int *aux;
+	int row_num = gr->row_num, col_num = gr->col_num;
+
+    for (int i = col_num-1; i >= 0; i--) {
+        if (gr->Gr[i][row_num - 1] == -1) { /* slide is always used after gravity */
+            slideLen++;
+            continue;
+        }
+        if (slideLen > 0) {
+            aux = grid[i + slideLen];
+            grid[i + slideLen] = grid[i];
+            grid[i] = aux;
+        }
+    }
+}
+
+int *grOneD(Grid *gr) {
+
+	int *oneD = (int *) malloc((gr->col_num * gr->row_num + 1) * sizeof(int));
+
+	for (int i = 0; i < gr->col_num; i++)
+
+		for (int j = 0; j < gr->row_num; j++)
+
+			oneD[1 + i*gr->col_num + j] = gr->Gr[i][j];
+
+	oneD[0] = gr->col_num * gr->row_num;
+
+	return oneD;
 
 }
 

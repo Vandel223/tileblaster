@@ -74,6 +74,14 @@ PrioQueue *pqInit(int size, int (*less)(Item, Item)) {
 
 }
 
+PrioQueue *pqCopy(PrioQueue *pq) {
+
+	PrioQueue *cpy = pqInit(pq->hsize, pq->less);
+
+	return cpy;
+
+}
+
 int pqEnqueue(Item it, PrioQueue *pq) {
 
 	/* If PrioQueue isn't full yet ... */

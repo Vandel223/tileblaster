@@ -14,6 +14,9 @@ void grBlock_rec(Grid *, int, int, int, int *, int);
 void grPrint(Grid *);
 void grRead(Grid *, FILE *);
 Grid *grCopy(Grid *);
+void grGravity(Grid *);
+void grSlide(Grid *);
+int *grOneD(Grid *);
 void grFree(Grid *);
 
 #endif

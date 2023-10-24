@@ -16,9 +16,20 @@ Header *hdrRead(FILE *fp) {
 
 	Header *hdr = (Header *) malloc(sizeof(Header));
 
-	fscanf(fp, "%d %d %d", &hdr->row_num, &hdr->col_num, &hdr->var);
+	if (fscanf(fp, "%d %d %d", &hdr->row_num, &hdr->col_num, &hdr->var) == 3) return hdr;
 
-	return hdr;
+	else {
+
+		hdrFree(hdr);
+		return NULL;
+
+	}
+
+}
+
+void hdrFPrint(Header *hdr, FILE *fp) {
+
+	fprintf(fp, "%d %d %d\n", hdrR(hdr), hdrC(hdr), hdrVar(hdr));
 
 }
 
