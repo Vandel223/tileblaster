@@ -17,9 +17,12 @@ void stateRmvBlock(State *);
 Block *statePlay(State *);
 int stateScore(State *);
 Grid *stateWall(State *);
+ColorCnt **stateColor(State *stt);
 State *statePrev(State *);
+int thereIsNeed(State *);
 int stateClear(State *);
+Grid *stateGrid(State *);
 void stateFree(Item);
-int thereIsHope(State *, int);
+int thereIsHope(State *, int, ColorCnt **);
 
 #endif

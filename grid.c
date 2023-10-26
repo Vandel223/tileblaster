@@ -61,13 +61,13 @@ Block *grBlock(Grid *gr, int x, int y, int rm) {
 
 	int cnt = 0, color = gr->Gr[x - 1][gr->row_num - y];
 
-	if (color == -1) return blkInit(x, y, 0);
+	if (color == -1) return blkInit(x, y, 0, -1);
 
 	grBlock_rec(gr, x, y, color, &cnt, rm);
 
 	if (rm == 1) return NULL;
 
-	Block *blk = blkInit(x, y, cnt);
+	Block *blk = blkInit(x, y, cnt, color);
 
 	return blk;
 
@@ -157,6 +157,18 @@ void grRead(Grid *gr, FILE *file) {
 
 }
 
+void colorsUpdate(ColorCnt **colors, Block *blk, Grid *gr) {
+
+	int hash = blkColor(blk) % (gr->row_num * gr->col_num);
+
+	while (colors[hash] != NULL && colors[hash]->color != blkColor(blk)) hash++;
+
+	if (colors[hash] == NULL) return;
+
+	colors[hash]->cnt -= blkNum(blk);
+
+}
+
 Grid *grCopy(Grid *gr) {
 
 	Grid *cpy = grInit(gr->col_num, gr->row_num);
@@ -168,6 +180,27 @@ Grid *grCopy(Grid *gr) {
 			cpy->Gr[i][j] = gr->Gr[i][j];
 
 	return cpy;
+
+}
+
+ColorCnt **colorsCopy(ColorCnt **colors, Grid *gr) {
+
+	ColorCnt **copy = (ColorCnt **) malloc(gr->row_num * gr->col_num * sizeof(ColorCnt *));
+
+	for (int i = 0; i < gr->row_num * gr->col_num; i++) {
+
+		if (colors[i] != NULL) {
+
+			copy[i] = (ColorCnt *) malloc(sizeof(ColorCnt));
+
+			copy[i]->cnt = colors[i]->cnt;
+			copy[i]->color = colors[i]->color;
+
+		}
+
+	}
+
+	return copy;
 
 }
 
@@ -211,12 +244,19 @@ void grSlide(Grid *gr) {
     }
 }
 
-Node **grCountColors(Grid *gr) {
+void grColorsFree(Grid *gr, ColorCnt **colors) {
+
+	for (int i = 0; i < gr->row_num * gr->col_num; i++) free(colors[i]);
+
+	free(colors);
+
+}
+
+ColorCnt **grCountColors(Grid *gr) {
 
 	int size = gr->col_num * gr->row_num;
 
-	Node **colors = (Node **) calloc(size, sizeof(Node *));
-	Node *aux, *prev, *curr;
+	ColorCnt **colors = (ColorCnt **) calloc(size, sizeof(ColorCnt *));
 
 	int hash;
 
@@ -224,66 +264,27 @@ Node **grCountColors(Grid *gr) {
 
 		for (int j = 0; j < gr->row_num; j++)  {
 
-			hash = (gr->Gr[i][j] % (size));
-			curr = colors[hash];
-			prev = NULL;
+			int tile = gr->Gr[i][j];
+			hash = (tile % (size));
 
-			while (curr != NULL && curr->cCnt.color != gr->Gr[i][j]) {
 
-				prev = curr;
-				curr = curr->next;
+			while (colors[hash] != NULL && colors[hash]->color != tile) hash++;
 
-			}
+			if (colors[hash] == NULL) {
 
-			if (curr == NULL) {
+				ColorCnt *aux = (ColorCnt *) malloc(sizeof(ColorCnt));
 
-				aux = (Node *) malloc(sizeof(Node));
-				aux->cCnt.color = gr->Gr[i][j];
-				aux->next = NULL;
-				if (colors[hash] != NULL) prev->next = aux;
-				else colors[hash] = aux;
-				curr = aux;
+				aux->color = tile;
+				aux->cnt = 0;
+				colors[hash] = aux;
 
 			}
 
-
-			(curr->cCnt.cnt)++;
+			(colors[hash]->cnt)++;
 
 		}
 
 	return colors;
-
-}
-
-int grTiles(Grid *gr) {
-
-	int res = 0;
-
-	for (int i = 0; i < gr->col_num; i++)
-		for (int j = 0; j < gr->row_num; j++) {
-
-			if (gr->Gr[i][j] != -1) res++;
-
-		}
-
-	return res;
-
-}
-
-int *grOneD(Grid *gr) {
-
-	int *res = (int *) malloc((gr->col_num * gr->row_num + 1) * sizeof(int));
-
-	for (int i = 0; i < gr->col_num; i++)
-		for (int j = 0; j < gr->row_num; j++) {
-
-			res[i * gr->row_num + j + 1] = gr->Gr[i][j];
-
-		}
-
-	res[0] = gr->col_num * gr->row_num;
-
-	return res;
 
 }
 

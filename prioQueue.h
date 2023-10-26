@@ -11,6 +11,7 @@ int pqEnqueue(Item, PrioQueue *);
 Item pqDequeue(PrioQueue *);
 int pqIsEmpty(PrioQueue *);
 int pqIsFull(PrioQueue *);
+int pqSize(PrioQueue *);
 void pqFree(PrioQueue *);
 void pqFreeItems(PrioQueue *);
 

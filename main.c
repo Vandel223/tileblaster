@@ -17,11 +17,14 @@ int main(int argc, char **argv) {
 
 	char *filename = argv[1];                                                                         
 
-    //if (fileCheckExt(filename) == 0) exit(1);
+    if (fileCheckExt(filename) == 0) exit(1);
 
     /* Open the files */
     FILE *fileIn = fileOpen(filename, "r");
-    //FILE *fileOut = fileOpen(filename, "w");
+
+	fileChangeExt(filename);
+
+	FILE *fileOut = fileOpen(filename, "w");
 
 	Header *hd;
 	int *numPlays, *score;
@@ -31,7 +34,7 @@ int main(int argc, char **argv) {
 
 	while ((hd = hdrRead(fileIn)) != NULL) {
 
-		hdrFPrint(hd, stdout);
+		hdrFPrint(hd, fileOut);
 
 		State *stt_i = stateInit(hdrC(hd), hdrR(hd));
 
@@ -41,17 +44,19 @@ int main(int argc, char **argv) {
 		if (hdrVar(hd) == -1) {
 
 			coords = dfs(stt_i, 0, numPlays, score);
-			for (int i = 0; i < hdrC(hd) * hdrR(hd) / 2; i++) {
 
-				if (coords[i].x == 0) break;
+			if (coords == NULL) {
 
-				fprintf(stdout, "%d - %d\n", coords[i].x, coords[i].y);
+				fprintf(fileOut, "%d %d\n", 0, 0);
+				continue;
 
 			}
 
-			free(coords);
+			fprintf(fileOut, "%d %d\n", *numPlays, *score);
 
-			fprintf(stdout, "\n\n%d %d\n\n\n", *numPlays, *score);
+			fileWriteCoords(fileOut, coords, hd);
+
+			free(coords);
 
 		}
 
@@ -59,27 +64,41 @@ int main(int argc, char **argv) {
 
 			coords = dfs(stt_i, hdrVar(hd), numPlays, score);
 
-			if (coords == NULL) {printf("KA TENI\n"); continue;}
+			if (coords == NULL) {
 
-			for (int i = 0; i < hdrC(hd) * hdrR(hd) / 2; i++) {
-
-				if (coords[i].x == 0) break;
-
-				fprintf(stdout, "%d - %d\n", coords[i].x, coords[i].y);
+				fprintf(fileOut, "%d %d\n", 0, -1);
+				continue;
 
 			}
 
-			free(coords);
+			fprintf(fileOut, "%d %d\n", *numPlays, *score);
 
-			fprintf(stdout, "\n\n%d %d\n\n\n", *numPlays, *score);
+			fileWriteCoords(fileOut, coords, hd);
+
+			free(coords);
 
 		}
 
 		else if (hdrVar(hd) == -3) {
 
-			//dfs(var 3)
+			coords = dfs(stt_i, hdrVar(hd), numPlays, score);
+
+			if (coords == NULL) {
+
+				fprintf(fileOut, "%d %d\n", 0, 0);
+				continue;
+
+			}
+
+			fprintf(fileOut, "%d %d\n", *numPlays, *score);
+
+			fileWriteCoords(fileOut, coords, hd);
+
+			free(coords);
 
 		}
+
+		fileSep(fileOut);
 
 		hdrFree(hd);
 
@@ -88,6 +107,7 @@ int main(int argc, char **argv) {
 	free(numPlays);
 	free(score);
 	fclose(fileIn);
+	fclose(fileOut);
 
 	exit(0);
 

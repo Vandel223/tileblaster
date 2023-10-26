@@ -8,16 +8,18 @@ struct _block {
     int x;
     int y;
     int num;
+	int color;
 
 };
 
-Block *blkInit(int x, int y, int num) {
+Block *blkInit(int x, int y, int num, int color) {
 
 	Block *blk = (Block *) malloc(sizeof(Block));
 
 	blk->x = x;
 	blk->y = y;
 	blk->num = num;
+	blk->color = color;
 
 	return blk;
 
@@ -30,6 +32,7 @@ Block *blkCopy(Block *blk) {
 	cpy->x = blk->x;
 	cpy->y = blk->y;
 	cpy->num = blk->num;
+	cpy->color = blk->color;
 
 	return cpy;
 
@@ -50,6 +53,12 @@ int blkY(Block *blk) {
 int blkNum(Block *blk) {
 
 	return blk->num;
+
+}
+
+int blkColor(Block *blk) {
+
+	return blk->color;
 
 }
 

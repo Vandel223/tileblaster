@@ -89,7 +89,7 @@ int pqEnqueue(Item it, PrioQueue *pq) {
 
 		/* ... store Item in last position and fix Heap upwards from Item */
 		pq->Heap[(pq->free)++] = it;
-		fixUp(pq->Heap, pq->free - 1, pq->less);
+		//fixUp(pq->Heap, pq->free - 1, pq->less);
 
 		/* Return success */
 		return 1;
@@ -107,7 +107,7 @@ Item pqDequeue(PrioQueue *pq) {
 	if (!pqIsEmpty(pq)) {
 
 		exch(pq->Heap[0], pq->Heap[pq->free - 1])		/* ... switch top with last ... */
-		fixDown(pq->Heap, 0, pq->free - 1, pq->less);	/* ... fix downwards Heap from top ... */
+		//fixDown(pq->Heap, 0, pq->free - 1, pq->less);	/* ... fix downwards Heap from top ... */
 		return pq->Heap[--(pq->free)];					/* ... and return the most prio Item
 														   that is now on the last position */
 
@@ -135,6 +135,12 @@ void pqFree(PrioQueue *pq) {
 	pqFreeItems(pq);	/* Free everything inside PrioQueue */
 	free(pq->Heap);		/* Free Heap */
 	free(pq);			/* Free the PrioQueue struct */
+
+}
+
+int pqSize(PrioQueue *pq) {
+
+	return pq->hsize;
 
 }
 

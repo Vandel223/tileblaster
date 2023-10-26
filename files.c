@@ -3,6 +3,8 @@
 #include <stdio.h>
 
 #include "files.h"
+#include "header.h"
+#include "dfs.h"
 
 
 /* fileOpen
@@ -44,6 +46,25 @@ int fileCheckExt(char *filename) {
     }
 
 	return 1;
+
+}
+
+void fileChangeExt(char *filename) {
+	char *ext = strrchr(filename, '.');
+    memcpy(ext, ".tileblasts\0", 12);
+}
+
+void fileWriteCoords(FILE *fp, Coords *coords, Header *hd) {
+
+    for (int i = 0; i < hdrC(hd) * hdrR(hd) / 2; i++) {
+        if (coords[i].x == 0) break;
+        fprintf(fp, "%d %d\n", coords[i].y, coords[i].x);
+    }
+}
+
+void fileSep(FILE *fp) {
+
+	fprintf(fp, "\n");
 
 }
 

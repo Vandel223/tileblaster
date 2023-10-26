@@ -94,7 +94,7 @@ Coords *dfs(State *stt, int max, int *numPlays, int *score) {
 
 				}
 
-				else if (!thereIsHope(currState, max)) {
+				else if (num_play >= 10 && !thereIsHope(currState, max, stateColor(currState))) {
 
 					num_play--;
 					stateFree((Item) currState);
@@ -143,7 +143,7 @@ Coords *dfs(State *stt, int max, int *numPlays, int *score) {
 
 				}
 
-				else if (!thereIsHope(currState, max_score)) {
+				else if (num_play >= 5 && !thereIsHope(currState, max_score, stateColor(currState))) {
 
 					num_play--;
 					stateFree((Item) currState);

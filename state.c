@@ -16,6 +16,7 @@ struct _state {
 	int currScore;
 	struct _state *prev;
 	Block *play;
+	ColorCnt **colors;
 
 };
 
@@ -40,6 +41,7 @@ State *stateInit(int col_num, int row_num) {
 	stt->currScore = 0;
 	stt->prev = NULL;
 	stt->play = NULL;
+	stt->colors = NULL;
 
 	return stt;
 
@@ -48,6 +50,7 @@ State *stateInit(int col_num, int row_num) {
 void stateRead(State *stt, FILE *fp) {
 
 	grRead(stt->wall, fp);
+	stt->colors = grCountColors(stt->wall);
 
 }
 
@@ -60,6 +63,7 @@ State *stateCopy(State *stt) {
 	cpy->currScore = stt->currScore;
 	cpy->prev = stt;
 	cpy->play = NULL;
+	cpy->colors = colorsCopy(stt->colors, stt->wall);
 
 	return cpy;
 
@@ -81,6 +85,8 @@ void stateRmvBlock(State *stt) {
 
 	int n = blkNum(blk);
 	stt->currScore += n * (n - 1);
+
+	colorsUpdate(stt->colors, blk, stt->wall);
 
 	blkFree(blk);
 
@@ -128,76 +134,33 @@ void stateFree(Item stt) {
 
 }
 
-int thereIsHope(State *stt, int max) {
+Grid *stateGr(State *stt) {
 
-	Node **colors = grCountColors(stt->wall);
-
-	int ttl = 0, curr;
-
-	for (int i = 0; i < grCols(stt->wall) * grRows(stt->wall); i++) {
-
-		Node *aux = colors[i];
-		Node *f;
-
-		while (aux != NULL) {
-
-			curr = aux->cCnt.cnt;
-
-			if (curr < 2) continue;
-			ttl += curr * (curr - 1);
-
-			f = aux;
-			aux = aux->next;
-			free(f);
-
-		}
-	}
-
-	free(colors);
-
-	return stt->currScore + ttl >= max;
+	return stt->wall;
 
 }
 
-/*int thereIsHope(State *stt, int max) {
+ColorCnt **stateColor(State *stt) {
 
-	int *oneD = grOneD(stt->wall);
+	return stt->colors;
 
-	qsort(oneD + 1, oneD[0], sizeof(int), compare);
+}
 
-	int size = oneD[0];
-	int curr = -1;
-	int sm = 0, ttl = 0;
+int thereIsHope(State *stt, int max, ColorCnt **colors) {
 
-	for (int i = 1; i < size + 1; i++) {
+	int ttl = stt->currScore, val;
 
-		if (oneD[i] == -1) {
+	for (int i = 0; i < grCols(stt->wall) * grRows(stt->wall); i++) {
 
-			ttl += sm * (sm - 1);
-			break;
+		if (colors[i] == NULL) continue;
 
-		}
+		val = colors[i]->cnt;
 
-		if (oneD[i] == curr) {
-
-			sm++;
-
-		}
-
-		else {
-
-			ttl += sm * (sm - 1);
-			sm = 1;
-			curr = oneD[i];
-
-		}
+		ttl += val * (val - 1);
 
 	}
 
-	free(oneD);
+	return ttl >= max;
 
-	return stt->currScore + (ttl * (ttl - 1)) >= max;
-
-}*/
-
+}
 
