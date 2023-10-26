@@ -127,6 +127,7 @@ int stateClear(State *stt) {
 
 void stateFree(Item stt) {
 
+	grColorsFree(((State *) stt)->wall, ((State *) stt)->colors);
 	grFree(((State *) stt)->wall);
 	pqFree(((State *) stt)->legMovs);
 	if (((State *)stt)->play != NULL) free(((State *) stt)->play);

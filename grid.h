@@ -24,6 +24,7 @@ ColorCnt **colorsCopy(ColorCnt **, Grid *);
 void colorsUpdate(ColorCnt **, Block *, Grid *);
 int grCols(Grid *);
 int grRows(Grid *);
+void grColorsFree(Grid *, ColorCnt **);
 void grFree(Grid *);
 
 #endif

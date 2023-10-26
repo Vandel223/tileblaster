@@ -246,7 +246,7 @@ void grSlide(Grid *gr) {
 
 void grColorsFree(Grid *gr, ColorCnt **colors) {
 
-	for (int i = 0; i < gr->row_num * gr->col_num; i++) free(colors[i]);
+	for (int i = 0; i < gr->row_num * gr->col_num; i++) if (colors[i] != NULL) free(colors[i]);
 
 	free(colors);
 
