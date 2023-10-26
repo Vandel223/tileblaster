@@ -4,6 +4,7 @@
 #include "prioQueue.h"
 #include "grid.h"
 #include "block.h"
+#include "linkList.h"
 
 
 struct _grid {
@@ -203,26 +204,98 @@ void grSlide(Grid *gr) {
             continue;
         }
         if (slideLen > 0) {
-            aux = grid[i + slideLen];
-            grid[i + slideLen] = grid[i];
-            grid[i] = aux;
+            aux = gr->Gr[i + slideLen];
+            gr->Gr[i + slideLen] = gr->Gr[i];
+            gr->Gr[i] = aux;
         }
     }
 }
 
-int *grOneD(Grid *gr) {
+Node **grCountColors(Grid *gr) {
 
-	int *oneD = (int *) malloc((gr->col_num * gr->row_num + 1) * sizeof(int));
+	int size = gr->col_num * gr->row_num;
+
+	Node **colors = (Node **) calloc(size, sizeof(Node *));
+	Node *aux, *prev, *curr;
+
+	int hash;
 
 	for (int i = 0; i < gr->col_num; i++)
 
-		for (int j = 0; j < gr->row_num; j++)
+		for (int j = 0; j < gr->row_num; j++)  {
 
-			oneD[1 + i*gr->col_num + j] = gr->Gr[i][j];
+			hash = (gr->Gr[i][j] % (size));
+			curr = colors[hash];
+			prev = NULL;
 
-	oneD[0] = gr->col_num * gr->row_num;
+			while (curr != NULL && curr->cCnt.color != gr->Gr[i][j]) {
 
-	return oneD;
+				prev = curr;
+				curr = curr->next;
+
+			}
+
+			if (curr == NULL) {
+
+				aux = (Node *) malloc(sizeof(Node));
+				aux->cCnt.color = gr->Gr[i][j];
+				aux->next = NULL;
+				if (colors[hash] != NULL) prev->next = aux;
+				else colors[hash] = aux;
+				curr = aux;
+
+			}
+
+
+			(curr->cCnt.cnt)++;
+
+		}
+
+	return colors;
+
+}
+
+int grTiles(Grid *gr) {
+
+	int res = 0;
+
+	for (int i = 0; i < gr->col_num; i++)
+		for (int j = 0; j < gr->row_num; j++) {
+
+			if (gr->Gr[i][j] != -1) res++;
+
+		}
+
+	return res;
+
+}
+
+int *grOneD(Grid *gr) {
+
+	int *res = (int *) malloc((gr->col_num * gr->row_num + 1) * sizeof(int));
+
+	for (int i = 0; i < gr->col_num; i++)
+		for (int j = 0; j < gr->row_num; j++) {
+
+			res[i * gr->row_num + j + 1] = gr->Gr[i][j];
+
+		}
+
+	res[0] = gr->col_num * gr->row_num;
+
+	return res;
+
+}
+
+int grCols(Grid *gr) {
+
+	return gr->col_num;
+
+}
+
+int grRows(Grid *gr) {
+
+	return gr->row_num;
 
 }
 

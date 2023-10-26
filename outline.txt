@@ -8,17 +8,13 @@ Algoritmos principais:
 Estruturas:
 
 	- estrutura do estado:
-		- parede
-		- lista de adjacencia (acervo - implementação como arvore binaria):
-			- valor da mancha
-			- posição (apenas 1 coordenada)
-			- 
+		- Grid
+		- PrioQueue - lances legais:
+			- Block
+		- pointer para pai
 
 	- stack de estados (tamanho é ):
 		- 
-
-	- array de conectividade - tamanho é (L * C)/2 - Pos {int x; int y}
-
 
 TODO:
 	dfs.c e dfs.h

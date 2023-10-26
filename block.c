@@ -3,11 +3,11 @@
 #include "block.h"
 
 
-struct _block {
+struct _block {                                                                                      
 
-	int x;
-	int y;
-	int num;
+    int x;
+    int y;
+    int num;
 
 };
 
@@ -20,6 +20,18 @@ Block *blkInit(int x, int y, int num) {
 	blk->num = num;
 
 	return blk;
+
+}
+
+Block *blkCopy(Block *blk) {
+
+	Block *cpy = (Block *) malloc(sizeof(Block));
+
+	cpy->x = blk->x;
+	cpy->y = blk->y;
+	cpy->num = blk->num;
+
+	return cpy;
 
 }
 

@@ -2,6 +2,7 @@
 
 #include "item.h" 
 #include "stack.h"
+#include "linkList.h"
 
 
 struct _stack {
@@ -74,17 +75,17 @@ int stIsFull(Stack *st) {
 
 }
 
-void stFree(Stack *st) {
+void stFree(Stack *st, void (*freeIt)(Item)) {
 
-	stFreeItems(st);
+	stFreeItems(st, freeIt);
 	free(st->Arr);
 	free(st);
 
 }
 
-void stFreeItems(Stack *st) {
+void stFreeItems(Stack *st, void (*free)(Item)) {
 
-	for (int i = 0; i < st->ssize; i++) {
+	for (int i = 0; i < st->top; i++) {
 
 		if (st->Arr[i] != NULL) free(st->Arr[i]);
 

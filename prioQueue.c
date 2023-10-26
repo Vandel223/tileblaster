@@ -142,7 +142,7 @@ void pqFreeItems(PrioQueue *pq) {
 
 	/* Iterate through everything inside Heap, even if not considered anymore,
 	   i.e., even if free <= index */
-	for (int i = 0; i < pq->hsize; i++) {
+	for (int i = 0; i < pq->free; i++) {
 
 		if (pq->Heap[i] != NULL) free(pq->Heap[i]);
 

@@ -11,8 +11,8 @@ Item pop(Stack *);
 Item peek(Stack *);
 int stIsEmpty(Stack *);
 int stIsFull(Stack *);
-void stFree(Stack *);
-void stFreeItems(Stack *);
+void stFree(Stack *, void (*free)(Item));
+void stFreeItems(Stack *, void (*free)(Item));
 
 #endif
 

@@ -1,8 +1,11 @@
 #ifndef _GRID_H_
 #define _GRID_H_
 
+#include <stdio.h>
+
 #include "prioQueue.h"
 #include "block.h"
+#include "linkList.h"
 
 
 typedef struct _grid Grid;
@@ -16,7 +19,11 @@ void grRead(Grid *, FILE *);
 Grid *grCopy(Grid *);
 void grGravity(Grid *);
 void grSlide(Grid *);
+Node **grCountColors(Grid *);
+int grTiles(Grid *);
 int *grOneD(Grid *);
+int grCols(Grid *);
+int grRows(Grid *);
 void grFree(Grid *);
 
 #endif
