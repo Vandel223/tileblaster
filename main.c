@@ -3,49 +3,91 @@
 
 #include "files.h"
 #include "header.h"
-#include "block.h"
-#include "prioQueue.h"
-#include "grid.h"
-#include "item.h"
+#include "state.h"
+#include "dfs.h"
 
 
-int less(Item a, Item b) {
+int main(int argc, char **argv) {
 
-	int nA = blkNum((Block *) a);
-	int nB = blkNum((Block *) b);
+	/* Check if the program is being correctly called,
+     * else go to help menu and exit */
+    if (argc != 2) {                                                                                  
+        exit(1);
+    }
 
-	return nA < nB;
+	char *filename = argv[1];                                                                         
 
-}
+    //if (fileCheckExt(filename) == 0) exit(1);
 
-int main() {
+    /* Open the files */
+    FILE *fileIn = fileOpen(filename, "r");
+    //FILE *fileOut = fileOpen(filename, "w");
 
-	char filename[] = "Ficheiros_testes/Manywalls50.tilewalls";
+	Header *hd;
+	int *numPlays, *score;
+	numPlays = (int *) calloc(1, sizeof(int));
+	score = (int *) calloc(1, sizeof(int));
+	Coords *coords;
 
-	if (fileCheckExt(filename) == 0) exit(1);
+	while ((hd = hdrRead(fileIn)) != NULL) {
 
-	FILE *fp = fileOpen(filename, "r");
+		hdrFPrint(hd, stdout);
 
-	Header *hdr = hdrRead(fp);
+		State *stt_i = stateInit(hdrC(hd), hdrR(hd));
 
-	Grid *gr = grInit(hdrC(hdr), hdrR(hdr));
-	PrioQueue *pq = pqInit(hdrC(hdr) * hdrR(hdr) / 2, less);
+		stateRead(stt_i, fileIn);
+		stateBlocks(stt_i);
 
-	grRead(gr, fp);
-	grBlocks(gr, pq);
-	Grid *cpy = grCopy(gr);
-	grPrint(gr);
-	grPrint(cpy);
+		if (hdrVar(hd) == -1) {
 
-	while (!pqIsEmpty(pq)) {
-		Block *blk = (Block *) pqDequeue(pq);
-		printf("%d - %d: val = %d\n", blkX(blk), blkY(blk), blkNum(blk));
+			coords = dfs(stt_i, 0, numPlays, score);
+			for (int i = 0; i < hdrC(hd) * hdrR(hd) / 2; i++) {
+
+				if (coords[i].x == 0) break;
+
+				fprintf(stdout, "%d - %d\n", coords[i].x, coords[i].y);
+
+			}
+
+			free(coords);
+
+			fprintf(stdout, "\n\n%d %d\n\n\n", *numPlays, *score);
+
+		}
+
+		else if (hdrVar(hd) >= 0) {
+
+			coords = dfs(stt_i, hdrVar(hd), numPlays, score);
+
+			if (coords == NULL) {printf("KA TENI\n"); continue;}
+
+			for (int i = 0; i < hdrC(hd) * hdrR(hd) / 2; i++) {
+
+				if (coords[i].x == 0) break;
+
+				fprintf(stdout, "%d - %d\n", coords[i].x, coords[i].y);
+
+			}
+
+			free(coords);
+
+			fprintf(stdout, "\n\n%d %d\n\n\n", *numPlays, *score);
+
+		}
+
+		else if (hdrVar(hd) == -3) {
+
+			//dfs(var 3)
+
+		}
+
+		hdrFree(hd);
+
 	}
 
-	grFree(gr);
-	grFree(cpy);
-	pqFree(pq);
-	hdrFree(hdr);
+	free(numPlays);
+	free(score);
+	fclose(fileIn);
 
 	exit(0);
 
