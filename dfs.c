@@ -94,7 +94,7 @@ Coords *dfs(State *stt, int max, int *numPlays, int *score) {
 
 				}
 
-				else if (num_play >= 10 && !thereIsHope(currState, max, stateColor(currState))) {
+				else if (num_play >= 5 && !thereIsHope(currState, max, stateColor(currState))) {
 
 					num_play--;
 					stateFree((Item) currState);
@@ -114,12 +114,13 @@ Coords *dfs(State *stt, int max, int *numPlays, int *score) {
 
 		}
 
+
 		stFree(stk, stateFree);
 		return NULL;
 
 	}
 
-	if (max == -1) {
+	if (max == -3) {
 
 		while (1) {
 
@@ -133,6 +134,7 @@ Coords *dfs(State *stt, int max, int *numPlays, int *score) {
 
 						*numPlays = num_play;
 						max_score = stateScore(currState);
+						if (coords != NULL) free(coords);
 						coords = backTrack(currState);
 
 					}
@@ -164,6 +166,7 @@ Coords *dfs(State *stt, int max, int *numPlays, int *score) {
 		}
 
 		stFree(stk, stateFree);
+		*score = max_score;
 		if (max_score == -1) return NULL;
 		else return coords;
 

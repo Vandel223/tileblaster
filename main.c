@@ -48,6 +48,7 @@ int main(int argc, char **argv) {
 			if (coords == NULL) {
 
 				fprintf(fileOut, "%d %d\n", 0, 0);
+				fileSep(fileOut);
 				continue;
 
 			}
@@ -67,6 +68,7 @@ int main(int argc, char **argv) {
 			if (coords == NULL) {
 
 				fprintf(fileOut, "%d %d\n", 0, -1);
+				fileSep(fileOut);
 				continue;
 
 			}
@@ -86,6 +88,7 @@ int main(int argc, char **argv) {
 			if (coords == NULL) {
 
 				fprintf(fileOut, "%d %d\n", 0, 0);
+				fileSep(fileOut);
 				continue;
 
 			}

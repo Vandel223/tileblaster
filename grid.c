@@ -47,7 +47,7 @@ void grBlocks(Grid *gr, PrioQueue *pq) {
 
 			if (gr->Gr[i][j] == -1 || gr->visited[i][j] == 1) continue;
 
-			Block *blk = grBlock(gr, i + 1, gr->row_num - j, 0);
+			Block *blk = grBlock(gr, i + 1, gr->row_num - j, gr->Gr[i][j]);
 			if (blkNum(blk) > 1) pqEnqueue((Item) blk, pq);
 			else blkFree(blk);
 
@@ -185,7 +185,7 @@ Grid *grCopy(Grid *gr) {
 
 ColorCnt **colorsCopy(ColorCnt **colors, Grid *gr) {
 
-	ColorCnt **copy = (ColorCnt **) malloc(gr->row_num * gr->col_num * sizeof(ColorCnt *));
+	ColorCnt **copy = (ColorCnt **) calloc(gr->row_num * gr->col_num, sizeof(ColorCnt *));
 
 	for (int i = 0; i < gr->row_num * gr->col_num; i++) {
 

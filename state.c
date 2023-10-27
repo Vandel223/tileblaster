@@ -135,12 +135,6 @@ void stateFree(Item stt) {
 
 }
 
-Grid *stateGr(State *stt) {
-
-	return stt->wall;
-
-}
-
 ColorCnt **stateColor(State *stt) {
 
 	return stt->colors;
